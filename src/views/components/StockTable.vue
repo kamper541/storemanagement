@@ -2,7 +2,7 @@
   <div class="card mb-4">
     <div class="d-flex align-items-center card-header pb-0">
       <h6>Stock</h6>
-      <argon-button color="success" size="sm" class="ms-auto">Add</argon-button>
+      <argon-button @click="addItem" color="success" size="sm" class="ms-auto">Add</argon-button>
     </div>
 
     <div class="card-body px-0 pt-0 pb-2">
@@ -116,11 +116,21 @@
               >
                 Action
               </th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
-            
+            <tr v-for="item in rowData" :key="item.id">
+              <td>{{ item.detail }}</td>
+              <td>{{ item.barid }}</td>
+              <td>{{ item.beid }}</td>
+              <td>{{ item.disc }}</td>
+              <td>{{ item.discper }}</td>
+              <td>{{ item.jmid }}</td>
+              <td>{{ item.qty }}</td>
+              <td>{{ item.priceperu }}</td>
+              <td>{{ item.taxactive }}</td>
+              <td>{{ item.action }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -134,29 +144,51 @@ import ArgonButton from "../../components/ArgonButton.vue";
 export default {
   name: "stock-table",
   components: { ArgonButton },
-//   setup() {
-//     const headers: Header[] = [
-//       { text: "Detail", value: "detail", sortable: true },
-//       { text: "Barcode ID", value: "id", sortable: true },
-//       { text: "BE ID", value: "beid", sortable: true },
-//       { text: "Discount (amount)", value: "dcount", sortable: true },
-//       { text: "Discount (%)", value: "dcountper", sortable: true },
-//       { text: "JM ID", value: "jmid", sortable: true },
-//       { text: "Quantities", value: "qty", sortable: true },
-//     ];
-//     const items: Item[] = [
-
-//     ];
-//     return {
-//         headers,
-//         items
-//     };
-//   }
+  data() {
+    return {
+      detail: "this.detail",
+      barid: "this.barid",
+      beid: "this.beid",
+      disc: "this.disc",
+      discper: "this.discper",
+      jmid: "this.jmid",
+      qty: "this.qty",
+      priceperu: "this.priceperu",
+      taxactive: "this.taxactive",
+      action: "this.action",
+      rowData: [],
+    };
+  },
+  methods: {
+    addItem() {
+        let myObject = {
+          detail: this.detail,
+          barid: this.barid,
+          beid: this.beid,
+          disc: this.disc,
+          discper: this.discper,
+          jmid: this.jmid,
+          qty: this.qty,
+          priceperu: this.priceperu,
+          taxactive: this.taxactive,
+          action: this.action,
+      //     // detail: this.detail,
+      //     // barid: this.barid,
+      //     // beid: this.beid,
+      //     // disc: this.disc,
+      //     // discper: this.discper,
+      //     // jmid: this.jmid,
+      //     // qty: this.qty,
+        };
+        this.rowData.push(myObject);
+        console.log("completed");
+    },
+  },
 };
 </script>
 
 <style scoped>
 .stock-table {
-  max-height: 300px;
+  max-height: 720px;
 }
 </style>

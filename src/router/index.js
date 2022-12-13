@@ -7,6 +7,8 @@ import RTL from "../views/Rtl.vue";
 import Profile from "../views/Profile.vue";
 import Signup from "../views/Signup.vue";
 import Signin from "../views/Signin.vue";
+import Stock from "../views/Stock.vue"
+import Customer from "../views/Customer.vue"
 
 const routes = [
   {
@@ -23,6 +25,16 @@ const routes = [
     path: "/tables",
     name: "Tables",
     component: Tables,
+  },
+  {
+    path: "/stock",
+    name: "Stock",
+    component: Stock,
+  },
+  {
+    path: "/customer",
+    name: "Customer",
+    component: Customer,
   },
   {
     path: "/billing",

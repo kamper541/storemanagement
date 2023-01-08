@@ -88,11 +88,24 @@
           </template>
         </sidenav-item>
       </li>
+      <li class="nav-item">
+        <argon-button
+          @click="logout"
+          class="mt-5"
+          variant="gradient"
+          color="success"
+          fullWidth
+          size="lg"
+          >Sign out</argon-button
+        >
+      </li>
     </ul>
   </div>
 </template>
 <script>
 import SidenavItem from "./SidenavItem.vue";
+import ArgonButton from "@/components/ArgonButton.vue";
+import { getAuth, signOut } from "firebase/auth";
 
 export default {
   name: "SidenavList",
@@ -108,11 +121,25 @@ export default {
   },
   components: {
     SidenavItem,
+    ArgonButton,
   },
   methods: {
     getRoute() {
       const routeArr = this.$route.path.split("/");
       return routeArr[1];
+    },
+    async logout(event) {
+      event.preventDefault();
+      const auth = getAuth();
+      await signOut(
+        auth
+      )
+        .then(() => {
+          this.$router.push("/signin").catch(() => {});
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
     },
   },
 };

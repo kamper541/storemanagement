@@ -2,7 +2,79 @@
   <div class="card mb-4">
     <div class="d-flex align-items-center card-header pb-0">
       <h6>Stock</h6>
-      <argon-button @click="addItem" color="success" size="sm" class="ms-auto">Add</argon-button>
+    </div>
+
+    <div class="card-body">
+      <p class="text-uppercase text-sm">Item Information</p>
+      <form role="form" @submit.prevent="handlesubmit">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >DETAIL</label
+            >
+            <argon-input type="text" name="detail" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >BARCODEID</label
+            >
+            <argon-input type="text" name="barid" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >BE ID</label
+            >
+            <argon-input type="text" name="beid" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >DISCOUNT (Amount)</label
+            >
+            <argon-input type="number" name="disc" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >DISCOUNT (%)</label
+            >
+            <argon-input type="number" name="discper" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >JM ID</label
+            >
+            <argon-input type="text" name="jmid" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >QUANTITIES</label
+            >
+            <argon-input type="number" name="qty" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >PRICE/UNIT</label
+            >
+            <argon-input type="number" name="priceperu" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-checkbox-input" class="form-control-label"
+              >TAX ACTIVE?</label
+            >
+            <argon-input type="text" name="taxactive" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >ACTIVE</label
+            >
+            <argon-input type="text" name="action" value="" />
+          </div>
+        </div>
+        <div class="text-center">
+          <argon-button color="success" size="sm" class="mb-4 mx-auto"
+            >Add</argon-button
+          >
+        </div>
+      </form>
     </div>
 
     <div class="card-body px-0 pt-0 pb-2">
@@ -140,48 +212,47 @@
 
 <script>
 import ArgonButton from "../../components/ArgonButton.vue";
+import ArgonInput from "@/components/ArgonInput.vue";
+
+import { db } from "../../Firebase";
+
+import { collection, onSnapshot, addDoc } from "firebase/firestore";
 
 export default {
   name: "stock-table",
-  components: { ArgonButton },
+  components: { ArgonButton, ArgonInput },
   data() {
     return {
-      detail: "this.detail",
-      barid: "this.barid",
-      beid: "this.beid",
-      disc: "this.disc",
-      discper: "this.discper",
-      jmid: "this.jmid",
-      qty: "this.qty",
-      priceperu: "this.priceperu",
-      taxactive: "this.taxactive",
-      action: "this.action",
       rowData: [],
     };
   },
+  mounted() {
+    const q = collection(db, "stock")
+    onSnapshot(q, (querySnapshot) =>{
+      const stock = []
+      querySnapshot.forEach((doc) => {
+        stock.push(doc.data())
+      })
+      this.rowData = stock
+    })
+  },
   methods: {
-    addItem() {
-        let myObject = {
-          detail: this.detail,
-          barid: this.barid,
-          beid: this.beid,
-          disc: this.disc,
-          discper: this.discper,
-          jmid: this.jmid,
-          qty: this.qty,
-          priceperu: this.priceperu,
-          taxactive: this.taxactive,
-          action: this.action,
-      //     // detail: this.detail,
-      //     // barid: this.barid,
-      //     // beid: this.beid,
-      //     // disc: this.disc,
-      //     // discper: this.discper,
-      //     // jmid: this.jmid,
-      //     // qty: this.qty,
-        };
-        this.rowData.push(myObject);
-        console.log("completed");
+    async handlesubmit(event) {
+      event.preventDefault();
+      const docRef = await addDoc(collection(db, "stock"), {
+        detail: event.target.elements.detail.value,
+        barid: event.target.elements.barid.value,
+        beid: event.target.elements.beid.value,
+        disc: event.target.elements.disc.value,
+        discper: event.target.elements.discper.value,
+        jmid: event.target.elements.jmid.value,
+        qty: event.target.elements.qty.value,
+        priceperu: event.target.elements.priceperu.value,
+        taxactive: event.target.elements.taxactive.value,
+        action: event.target.elements.action.value,
+      });
+      alert("Item has been added to the stock");
+      console.log("Document written with ID: ", docRef.id);
     },
   },
 };

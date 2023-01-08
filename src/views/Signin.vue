@@ -49,6 +49,12 @@
 <script>
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "firebase/auth";
+
 const body = document.getElementsByTagName("body")[0];
 
 export default {
@@ -69,6 +75,13 @@ export default {
     this.$store.state.showSidenav = false;
     this.$store.state.showFooter = false;
     body.classList.remove("bg-gray-100");
+
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.$router.push("/profile").catch(() => {})
+      }
+    })
   },
   beforeUnmount() {
     this.$store.state.hideConfigButton = false;
@@ -78,7 +91,18 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    handlesubmit(event){
+    async handlesubmit(event){
+      event.preventDefault();
+      const auth = getAuth();
+      await signInWithEmailAndPassword(
+        auth,
+        event.target.elements.id.value,
+        event.target.elements.password.value
+      ).then(() => {
+        this.$router.push("/profile").catch(() => {});
+      }).catch((error) => {
+        alert(error.message);
+      })
       console.log(event.target.elements.id.value);
       console.log(event.target.elements.password.value);
     }

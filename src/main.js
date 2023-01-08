@@ -8,10 +8,12 @@ import ArgonDashboard from "./argon-dashboard";
 import DataTable from 'datatables.net-vue3'
 import DataTablesLib from 'datatables.net';
 import 'datatables.net-select';
+import './Firebase'
  
 DataTable.use(DataTablesLib);
 
 const appInstance = createApp(App);
+// appInstance.use(Firebase);
 appInstance.use(store);
 appInstance.use(router);
 appInstance.use(ArgonDashboard);

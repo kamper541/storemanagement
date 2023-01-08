@@ -13,6 +13,7 @@
         :value="value"
         :placeholder="placeholder"
         :isRequired="isRequired"
+        :disabled="isDisabled"
       />
       <span v-if="iconDir === 'right'" class="input-group-text">
         <i :class="getIcon(icon)"></i>
@@ -41,6 +42,7 @@ export default {
     placeholder: String,
     type: String,
     isRequired: Boolean,
+    isDisabled: Boolean,
   },
   methods: {
     getClasses: (size, valid) => {

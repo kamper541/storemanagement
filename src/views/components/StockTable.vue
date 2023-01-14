@@ -64,7 +64,7 @@
           </div>
           <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
-              >ACTIVE</label
+              >ACTION</label
             >
             <argon-input type="text" name="action" value="" />
           </div>
@@ -76,7 +76,7 @@
         </div>
       </form>
     </div>
-
+<!-- <span class="badge badge-sm bg-gradient-success">Online</span> -->
     <div class="card-body px-0 pt-0 pb-2">
       <div class="stock-table table-responsive p-0">
         <table class="table align-items-center justify-content-center mb-0">

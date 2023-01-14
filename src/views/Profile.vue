@@ -185,6 +185,7 @@ export default {
 
       await setDoc(doc(db, "users", auth.currentUser.uid), {
         storename: event.target.elements.storename.value,
+        email: auth.currentUser.email,
         firstname: event.target.elements.firstname.value,
         lastname: event.target.elements.lastname.value,
         address: event.target.elements.address.value,
@@ -194,7 +195,7 @@ export default {
         aboutme: event.target.elements.aboutme.value,
       });
 
-      // console.log(auth.currentUser.uid);
+      console.log(auth.currentUser);
       alert("Profile Updated");
     },
   },

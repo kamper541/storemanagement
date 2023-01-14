@@ -49,7 +49,7 @@
           :navText="'Stock'"
         >
           <template v-slot:icon>
-            <i class="ni ni-box-2 text-primary text-sm opacity-10"></i>
+            <i class="ni ni-box-2 text-warning text-sm opacity-10"></i>
           </template>
         </sidenav-item>
       </li>
@@ -61,6 +61,17 @@
         >
           <template v-slot:icon>
             <i class="ni ni-circle-08 text-primary text-sm opacity-10"></i>
+          </template>
+        </sidenav-item>
+      </li>
+      <li class="nav-item">
+        <sidenav-item
+          url="/invoice"
+          :class="getRoute() === 'invoice' ? 'active' : ''"
+          :navText="'Invoice'"
+        >
+          <template v-slot:icon>
+            <i class="ni ni-single-copy-04 text-success text-sm opacity-10"></i>
           </template>
         </sidenav-item>
       </li>

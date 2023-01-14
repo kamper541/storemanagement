@@ -1,11 +1,11 @@
 <template>
   <div class="card mb-4">
-    <div class="d-flex align-items-center card-header pb-0">
+    <!-- <div class="d-flex align-items-center card-header pb-0">
       <h6>Customers</h6>
       <argon-button @click="clicked" color="success" size="sm" class="ms-auto"
         >Add</argon-button
       >
-    </div>
+    </div> -->
     <div class="card-body">
       <p class="text-uppercase text-sm">Customer Information</p>
       <form role="form" @submit.prevent="handlesubmit">
@@ -22,7 +22,7 @@
             >
             <argon-input type="text" name="email" value="" />
           </div>
-          <div class="col-md-3">
+          <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
               >PASSWORD</label
             >
@@ -39,6 +39,17 @@
               >ADDRESS</label
             >
             <argon-input type="text" name="address" value="" />
+          </div>
+          <div class="text-center">
+            <label for="example-text-input" class="form-control-label"
+              >Password</label
+            >
+            <argon-input
+              type="text"
+              name="oldPassword"
+              value=""
+              placeholder="confirm a account creation by entering your password (admin's password)"
+            />
           </div>
         </div>
         <div class="text-center">
@@ -61,7 +72,7 @@
                   ps-2
                 "
               >
-                Storename
+                Customer_ID
               </th>
               <th
                 class="
@@ -71,7 +82,7 @@
                   ps-2
                 "
               >
-                Email
+                Storename
               </th>
               <th
                 class="
@@ -89,9 +100,9 @@
           </thead>
           <tbody>
             <tr v-for="item in rowData" :key="item.id">
-              <td>{{ item.email }}</td>
-              <td>{{ item.storename }}</td>
-              <td>{{ item.address }}</td>
+              <td>{{ item.id }}</td>
+              <td>{{ item.data().storename }}</td>
+              <td>{{ item.data().address }}</td>
             </tr>
           </tbody>
         </table>
@@ -104,7 +115,11 @@
 import ArgonButton from "@/components/ArgonButton.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
 
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 import { db } from "../../Firebase";
 
@@ -131,7 +146,7 @@ export default {
     onSnapshot(q, (querySnapshot) => {
       const customers = [];
       querySnapshot.forEach((doc) => {
-        customers.push(doc.data());
+        customers.push(doc);
       });
       this.rowData = customers;
     });
@@ -141,16 +156,30 @@ export default {
     async handlesubmit(event) {
       event.preventDefault();
 
-      const auth = getAuth()
+      const auth = getAuth();
+      const oldEmail = auth.currentUser.email;
+      const oldPassword = event.target.elements.oldPassword.value;
       createUserWithEmailAndPassword(
         auth,
         event.target.elements.email.value,
         event.target.elements.password.value
-      ).then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user.uid);
-      });
+      )
+        .then(async () => {
+          // Signed back
+          // const user = userCredential.user;
+          // console.log(user.uid);
+          alert("User created");
+          await signInWithEmailAndPassword(auth, oldEmail, oldPassword)
+            .then((userCredential) => {
+              alert("Back to ", userCredential);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
       const docRef = await addDoc(collection(db, "users"), {
         storename: event.target.element.storename.value,

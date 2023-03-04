@@ -1,6 +1,10 @@
 import { createStore } from "vuex";
+import Auth from "../warehouse/Auth"
 
 export default createStore({
+  modules: {
+    Auth
+  },
   state: {
     hideConfigButton: false,
     isPinned: true,

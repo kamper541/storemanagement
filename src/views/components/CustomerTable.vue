@@ -8,19 +8,13 @@
     </div> -->
     <div class="card-body">
       <p class="text-uppercase text-sm">Customer Information</p>
-      <form role="form" @submit.prevent="handlesubmit">
+      <form role="form" @submit.prevent="create_user">
         <div class="row">
-          <!-- <div class="col-md-6">
+          <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
               >ID</label
             >
-            <argon-input type="text" name="ID" value="" />
-          </div> -->
-          <div class="col-md-6">
-            <label for="example-text-input" class="form-control-label"
-              >EMAIL</label
-            >
-            <argon-input type="text" name="email" value="" />
+            <argon-input type="text" name="id" value="" />
           </div>
           <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
@@ -45,10 +39,10 @@
               >Password</label
             >
             <argon-input
-              type="text"
-              name="oldPassword"
+              type="password"
+              name="confirm_password"
               value=""
-              placeholder="confirm a account creation by entering your password (admin's password)"
+              placeholder="confirm password"
             />
           </div>
         </div>
@@ -114,22 +108,7 @@
 <script>
 import ArgonButton from "@/components/ArgonButton.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-
-import { db } from "../../Firebase";
-
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  addDoc,
-} from "firebase/firestore";
+import { mapActions } from "vuex";
 
 export default {
   name: "customer-table",
@@ -138,55 +117,33 @@ export default {
       rowData: [],
     };
   },
-  mounted() {
-    const q = query(
-      collection(db, "users"),
-      where("aboutme", "==", "customer")
-    );
-    onSnapshot(q, (querySnapshot) => {
-      const customers = [];
-      querySnapshot.forEach((doc) => {
-        customers.push(doc);
-      });
-      this.rowData = customers;
-    });
-  },
   components: { ArgonButton, ArgonInput },
   methods: {
-    async handlesubmit(event) {
-      event.preventDefault();
+    ...mapActions(["register"]),
+    async create_user(event) {
+      let user = {
+        username: event.target.elements.id.value,
+        password: event.target.elements.password.value,
+        confirm_password: event.target.elements.confirm_password.value,
+        email: "riw1232@hotmail.com",
+        name: "test123",
+        // username: 'test123',
+        // password: '12345',
+        // confirm_password: '12345',
+        // email: 'kamper-fc@hotmail.com',
+        // name: 'testest123'
+      };
+      console.log(user);
 
-      const auth = getAuth();
-      const oldEmail = auth.currentUser.email;
-      const oldPassword = event.target.elements.oldPassword.value;
-      createUserWithEmailAndPassword(
-        auth,
-        event.target.elements.email.value,
-        event.target.elements.password.value
-      )
-        .then(async () => {
-          // Signed back
-          // const user = userCredential.user;
-          // console.log(user.uid);
-          alert("User created");
-          await signInWithEmailAndPassword(auth, oldEmail, oldPassword)
-            .then((userCredential) => {
-              alert("Back to ", userCredential);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+      this.register(user)
+        .then((res) => {
+          if (res.data.success) {
+            this.$router.push("/customer");
+          }
         })
         .catch((err) => {
           console.log(err);
         });
-
-      const docRef = await addDoc(collection(db, "users"), {
-        storename: event.target.element.storename.value,
-        address: event.target.element.address.value,
-      });
-      alert("Item has been added to the stock");
-      console.log("Document written with ID: ", docRef.id);
     },
   },
 };

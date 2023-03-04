@@ -13,10 +13,22 @@
                 <div class="card-body">
                   <form role="form" @submit.prevent="handlesubmit">
                     <div class="mb-3">
-                      <argon-input type="text" placeholder="ID" name="id" size="lg" />
+                      <argon-input
+                        type="text"
+                        placeholder="ID"
+                        name="ID"
+                        id="ID"
+                        size="lg"
+                      />
                     </div>
                     <div class="mb-3">
-                      <argon-input type="password" placeholder="Password" name="password" size="lg" />
+                      <argon-input
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        id="password"
+                        size="lg"
+                      />
                     </div>
                     <div class="text-center">
                       <argon-button
@@ -25,16 +37,17 @@
                         color="success"
                         fullWidth
                         size="lg"
-                      >Sign in</argon-button>
+                        >Sign in</argon-button
+                      >
                     </div>
                   </form>
                 </div>
                 <div class="px-1 pt-0 text-center card-footer px-lg-2">
                   <p class="mx-auto mb-4 text-sm">
                     Don't have an account?
-                    <a
-                      class="text-success text-gradient font-weight-bold"
-                    >Please contact admin.</a>
+                    <a class="text-success text-gradient font-weight-bold"
+                      >Please contact admin.</a
+                    >
                   </p>
                 </div>
               </div>
@@ -49,21 +62,23 @@
 <script>
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged
-} from "firebase/auth";
+// import {
+//   getAuth,
+//   signInWithEmailAndPassword,
+//   onAuthStateChanged
+// } from "firebase/auth";
+
+import { mapActions } from "vuex";
 
 const body = document.getElementsByTagName("body")[0];
 
 export default {
   name: "signin",
-  data (){
+  data() {
     return {
       ID: "",
-      Password: ""
-      }
+      password: "",
+    };
   },
   components: {
     ArgonInput,
@@ -76,12 +91,12 @@ export default {
     this.$store.state.showFooter = false;
     body.classList.remove("bg-gray-100");
 
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.$router.push("/profile").catch(() => {})
-      }
-    })
+    // const auth = getAuth();
+    // onAuthStateChanged(auth, (user) => {
+    //   if (user) {
+    //     this.$router.push("/profile").catch(() => {})
+    //   }
+    // })
   },
   beforeUnmount() {
     this.$store.state.hideConfigButton = false;
@@ -91,21 +106,51 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    async handlesubmit(event){
-      event.preventDefault();
-      const auth = getAuth();
-      await signInWithEmailAndPassword(
-        auth,
-        event.target.elements.id.value,
+    ...mapActions(["login"]),
+    handlesubmit(event) {
+      console.log(
+        event.target.elements.ID.value,
         event.target.elements.password.value
-      ).then(() => {
-        this.$router.push("/profile").catch(() => {});
-      }).catch((error) => {
-        alert(error.message);
-      })
-      console.log(event.target.elements.id.value);
-      console.log(event.target.elements.password.value);
-    }
-  }
+      );
+      let user = {
+        username: event.target.elements.ID.value,
+        password: event.target.elements.password.value,
+      };
+      this.login(user)
+        .then((res) => {
+          if (res.data.success) {
+            this.$router.push("/profile");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    // async create_user() {
+    //   let user = {
+    //     // username: event.target.elements.id.value,
+    //     // password: event.target.elements.password.value,
+    //     // confirm_password: event.target.elements.confirm_password.value,
+    //     // email: "kamper-fc@hotmail.com",
+    //     // name: "test123",
+    //     username: "test123",
+    //     password: "12345",
+    //     confirm_password: "12345",
+    //     email: "kamper-fc@hotmail.com",
+    //     name: "testest123",
+    //   };
+    //   console.log(user);
+
+    //   this.register(user).then((res) => {
+    //     console.log(res);
+    //     if (res.data.success) {
+    //       this.$router.push("/customer");
+    //     }
+    //   });
+    //   // .catch((err) => {
+    //   //   console.log(err);
+    //   // });
+    // },
+  },
 };
 </script>

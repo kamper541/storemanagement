@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="py-4 container-fluid">
+    <div class="py-4 container-fluid" v-if="profileReady == 'success'">
       <div class="row min-height-200">
         <div class="col">
           <div class="card">
@@ -19,7 +19,7 @@
                     >
                     <argon-input
                       type="text"
-                      :value="info.storename"
+                      :value="user.storename"
                       name="storename"
                     />
                   </div>
@@ -29,29 +29,9 @@
                     >
                     <argon-input
                       type="email"
-                      :value="info.email"
+                      :value="user.email"
                       name="email"
                       :isDisabled="true"
-                    />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="example-text-input" class="form-control-label"
-                      >First name</label
-                    >
-                    <argon-input
-                      type="text"
-                      :value="info.firstname"
-                      name="firstname"
-                    />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="example-text-input" class="form-control-label"
-                      >Last name</label
-                    >
-                    <argon-input
-                      type="text"
-                      :value="info.lastname"
-                      name="lastname"
                     />
                   </div>
                 </div>
@@ -64,7 +44,7 @@
                     >
                     <argon-input
                       type="text"
-                      :value="info.address"
+                      :value="user.address"
                       name="address"
                     />
                   </div>
@@ -72,7 +52,7 @@
                     <label for="example-text-input" class="form-control-label"
                       >City</label
                     >
-                    <argon-input type="text" :value="info.city" name="city" />
+                    <argon-input type="text" :value="user.city" name="city" />
                   </div>
                   <div class="col-md-4">
                     <label for="example-text-input" class="form-control-label"
@@ -80,7 +60,7 @@
                     >
                     <argon-input
                       type="text"
-                      :value="info.country"
+                      :value="user.country"
                       name="country"
                     />
                   </div>
@@ -90,7 +70,7 @@
                     >
                     <argon-input
                       type="text"
-                      :value="info.postalcode"
+                      :value="user.postalcode"
                       name="postalcode"
                     />
                   </div>
@@ -104,7 +84,7 @@
                     >
                     <argon-input
                       type="text"
-                      :value="info.aboutme"
+                      :value="user.role"
                       name="aboutme"
                       :isDisabled="true"
                     />
@@ -129,11 +109,12 @@ import setNavPills from "@/assets/js/nav-pills.js";
 import setTooltip from "@/assets/js/tooltip.js";
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
+import { mapActions, mapGetters } from "vuex";
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { db } from "../Firebase";
+// import { getAuth, onAuthStateChanged } from "firebase/auth";
+// import { db } from "../Firebase";
 
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+// import { doc, onSnapshot, setDoc } from "firebase/firestore";
 
 const body = document.getElementsByTagName("body")[0];
 
@@ -142,62 +123,18 @@ export default {
   data() {
     return {
       showMenu: false,
-      info: {
-        storename: "",
-        email: "",
-        firstname: "",
-        lastname: "",
-        address: "",
-        city: "",
-        country: "",
-        postalcode: "",
-        aboutme: "",
-      },
     };
   },
   components: { ArgonInput, ArgonButton },
-  async created() {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        onSnapshot(doc(db, "users", auth.currentUser.uid), (doc) => {
-          console.log("Current data: ", doc.data());
-          const storeinfo = doc.data();
-          this.info.storename = storeinfo.storename;
-          this.info.email = user.email;
-          this.info.firstname = storeinfo.firstname;
-          this.info.lastname = storeinfo.lastname;
-          this.info.address = storeinfo.address;
-          this.info.city = storeinfo.city;
-          this.info.country = storeinfo.country;
-          this.info.postalcode = storeinfo.postalcode;
-          this.info.aboutme = storeinfo.aboutme;
-        });
-      } else {
-        this.$router.push("/signin").catch(() => {});
-      }
-    });
-  },
+  computed: mapGetters(["user", "profileReady"]),
   methods: {
-    async handleupdateprofile(event) {
-      event.preventDefault();
-      const auth = getAuth();
-
-      await setDoc(doc(db, "users", auth.currentUser.uid), {
-        storename: event.target.elements.storename.value,
-        email: auth.currentUser.email,
-        firstname: event.target.elements.firstname.value,
-        lastname: event.target.elements.lastname.value,
-        address: event.target.elements.address.value,
-        city: event.target.elements.city.value,
-        country: event.target.elements.country.value,
-        postalcode: event.target.elements.postalcode.value,
-        aboutme: event.target.elements.aboutme.value,
-      });
-
-      console.log(auth.currentUser);
+    async handleupdateprofile() {
       alert("Profile Updated");
     },
+    ...mapActions(["getProfile"]),
+  },
+  created() {
+    this.getProfile();
   },
 
   mounted() {

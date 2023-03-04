@@ -3,7 +3,7 @@
     class="collapse navbar-collapse w-auto h-auto h-100"
     id="sidenav-collapse-main"
   >
-    <ul class="navbar-nav">
+    <ul class="navbar-nav" v-if="profileReady == 'success'">
       <li class="mt-3 nav-item">
         <h6
           v-if="this.$store.state.isRTL"
@@ -53,7 +53,7 @@
           </template>
         </sidenav-item>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" v-if="user.role == 'admin'">
         <sidenav-item
           url="/customer"
           :class="getRoute() === 'customer' ? 'active' : ''"
@@ -101,7 +101,7 @@
       </li>
       <li class="nav-item">
         <argon-button
-          @click="logout"
+          @click="logoutUser"
           class="mt-5"
           variant="gradient"
           color="success"
@@ -116,7 +116,8 @@
 <script>
 import SidenavItem from "./SidenavItem.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
-import { getAuth, signOut } from "firebase/auth";
+import { mapActions, mapGetters } from "vuex";
+// import { getAuth, signOut } from "firebase/auth";
 
 export default {
   name: "SidenavList",
@@ -134,23 +135,16 @@ export default {
     SidenavItem,
     ArgonButton,
   },
+  computed: mapGetters(['user', 'profileReady']),
   methods: {
+    ...mapActions(["logout"]),
     getRoute() {
       const routeArr = this.$route.path.split("/");
       return routeArr[1];
     },
-    async logout(event) {
-      event.preventDefault();
-      const auth = getAuth();
-      await signOut(
-        auth
-      )
-        .then(() => {
-          this.$router.push("/signin").catch(() => {});
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
+    logoutUser() {
+      console.log('logout');
+      this.logout()
     },
   },
 };

@@ -4,7 +4,7 @@
       <h6>Stock</h6>
     </div>
 
-    <div class="card-body">
+    <div class="card-body" v-if="user.role == 'admin'">
       <p class="text-uppercase text-sm">Item Information</p>
       <form role="form" @submit.prevent="handlesubmit">
         <div class="row">
@@ -191,7 +191,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in rowData" :key="item.id">
+            <tr v-for="item in stock" :key="item.id">
               <td>{{ item.detail }}</td>
               <td>{{ item.barid }}</td>
               <td>{{ item.beid }}</td>
@@ -213,10 +213,11 @@
 <script>
 import ArgonButton from "../../components/ArgonButton.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
+import { mapActions, mapGetters } from "vuex";
 
-import { db } from "../../Firebase";
+// import { db } from "../../Firebase";
 
-import { collection, onSnapshot, addDoc } from "firebase/firestore";
+// import { collection, onSnapshot, addDoc } from "firebase/firestore";
 
 export default {
   name: "stock-table",
@@ -226,35 +227,32 @@ export default {
       rowData: [],
     };
   },
+  computed: mapGetters(['stock', 'user']),
   mounted() {
-    const q = collection(db, "stock")
-    onSnapshot(q, (querySnapshot) =>{
-      const stock = []
-      querySnapshot.forEach((doc) => {
-        stock.push(doc.data())
-      })
-      this.rowData = stock
-    })
   },
   methods: {
-    async handlesubmit(event) {
-      event.preventDefault();
-      const docRef = await addDoc(collection(db, "stock"), {
-        detail: event.target.elements.detail.value,
-        barid: event.target.elements.barid.value,
-        beid: event.target.elements.beid.value,
-        disc: event.target.elements.disc.value,
-        discper: event.target.elements.discper.value,
-        jmid: event.target.elements.jmid.value,
-        qty: event.target.elements.qty.value,
-        priceperu: event.target.elements.priceperu.value,
-        taxactive: event.target.elements.taxactive.value,
-        action: event.target.elements.action.value,
-      });
-      alert("Item has been added to the stock");
-      console.log("Document written with ID: ", docRef.id);
+    async handlesubmit() {
+      // event.preventDefault();
+      // const docRef = await addDoc(collection(db, "stock"), {
+      //   detail: event.target.elements.detail.value,
+      //   barid: event.target.elements.barid.value,
+      //   beid: event.target.elements.beid.value,
+      //   disc: event.target.elements.disc.value,
+      //   discper: event.target.elements.discper.value,
+      //   jmid: event.target.elements.jmid.value,
+      //   qty: event.target.elements.qty.value,
+      //   priceperu: event.target.elements.priceperu.value,
+      //   taxactive: event.target.elements.taxactive.value,
+      //   action: event.target.elements.action.value,
+      // });
+      // alert("Item has been added to the stock");
+      // console.log("Document written with ID: ", docRef.id);
     },
+    ...mapActions(['get_stock'])
   },
+  created() {
+    this.get_stock()
+  }
 };
 </script>
 

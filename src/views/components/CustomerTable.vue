@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-4">
+  <div class="card mb-4" v-if="users">
     <!-- <div class="d-flex align-items-center card-header pb-0">
       <h6>Customers</h6>
       <argon-button @click="clicked" color="success" size="sm" class="ms-auto"
@@ -93,10 +93,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in rowData" :key="item.id">
-              <td>{{ item.id }}</td>
-              <td>{{ item.data().storename }}</td>
-              <td>{{ item.data().address }}</td>
+            <tr v-for="user in users" :key="user._id">
+              <td>{{ user._id }}</td>
+              <td>{{ user.storename }}</td>
+              <td>{{ user.address }}</td>
             </tr>
           </tbody>
         </table>
@@ -108,7 +108,7 @@
 <script>
 import ArgonButton from "@/components/ArgonButton.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "customer-table",
@@ -118,8 +118,9 @@ export default {
     };
   },
   components: { ArgonButton, ArgonInput },
+  computed: mapGetters(['users']),
   methods: {
-    ...mapActions(["register"]),
+    ...mapActions(["register","getUsers"]),
     async create_user(event) {
       let user = {
         username: event.target.elements.id.value,
@@ -146,6 +147,9 @@ export default {
         });
     },
   },
+  created() {
+    this.getUsers()
+  }
 };
 </script>
 

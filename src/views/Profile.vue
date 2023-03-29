@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="py-4 container-fluid" v-if="profileReady == 'success'">
+    <div class="py-4 container-fluid" v-if="user">
       <div class="row min-height-200">
         <div class="col">
           <div class="card">
@@ -110,12 +110,6 @@ import setTooltip from "@/assets/js/tooltip.js";
 import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
 import { mapActions, mapGetters } from "vuex";
-
-// import { getAuth, onAuthStateChanged } from "firebase/auth";
-// import { db } from "../Firebase";
-
-// import { doc, onSnapshot, setDoc } from "firebase/firestore";
-
 const body = document.getElementsByTagName("body")[0];
 
 export default {
@@ -126,12 +120,29 @@ export default {
     };
   },
   components: { ArgonInput, ArgonButton },
-  computed: mapGetters(["user", "profileReady"]),
+  computed: mapGetters(["user"]),
   methods: {
-    async handleupdateprofile() {
-      alert("Profile Updated");
+    ...mapActions(["getProfile", "updateUser"]),
+    async handleupdateprofile(event) {
+      if (this.user) {
+        let updatedUser = {
+          id: this.user._id,
+          storename: event.target.elements.storename.value,
+          address: event.target.elements.address.value,
+          city: event.target.elements.city.value,
+          country: event.target.elements.country.value,
+          postalcode: event.target.elements.postalcode.value,
+        };
+        this.updateUser(updatedUser)
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        alert("Profile Updated");
+      }
     },
-    ...mapActions(["getProfile"]),
   },
   created() {
     this.getProfile();

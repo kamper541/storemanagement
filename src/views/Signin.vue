@@ -119,6 +119,7 @@ export default {
       this.login(user)
         .then((res) => {
           if (res.data.success) {
+            console.log(res.data.user);
             this.$router.push("/profile");
           }
         })

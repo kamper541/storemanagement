@@ -9,6 +9,7 @@ import Profile from "../views/Profile.vue";
 import Signin from "../views/Signin.vue";
 import Stock from "../views/Stock.vue";
 import Customer from "../views/Customer.vue";
+import Invoice from "../views/Invoice.vue"
 import store from "../store";
 
 const routes = [
@@ -25,6 +26,14 @@ const routes = [
       requiresAuth: true,
       requiresAdmin: false,
     },
+  },
+  {
+    path: "/invoice",
+    name: "Invoice",
+    component: Invoice,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/tables",

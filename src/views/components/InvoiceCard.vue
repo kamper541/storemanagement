@@ -10,7 +10,7 @@
         </div>
       </div>
     </div>
-    <div class="card-body p-3 pb-0 mb-0">
+    <!-- <div class="card-body p-3 pb-0 mb-0">
       <ul class="list-group">
         <li
           class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg"
@@ -81,7 +81,7 @@
           </div>
         </li>
       </ul>
-    </div>
+    </div> -->
   </div>
 </template>
 

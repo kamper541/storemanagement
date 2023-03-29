@@ -3,7 +3,7 @@
     class="collapse navbar-collapse w-auto h-auto h-100"
     id="sidenav-collapse-main"
   >
-    <ul class="navbar-nav" v-if="profileReady == 'success'">
+    <ul class="navbar-nav" v-if="user">
       <li class="mt-3 nav-item">
         <h6
           v-if="this.$store.state.isRTL"
@@ -135,7 +135,7 @@ export default {
     SidenavItem,
     ArgonButton,
   },
-  computed: mapGetters(['user', 'profileReady']),
+  computed: mapGetters(['user']),
   methods: {
     ...mapActions(["logout"]),
     getRoute() {

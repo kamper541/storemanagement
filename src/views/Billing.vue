@@ -35,14 +35,14 @@
         <invoice-card class="mt-4" />
       </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-md-7">
         <billing-card />
       </div>
       <div class="col-md-5">
         <transaction-card />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -51,8 +51,8 @@ import MasterCard from "@/examples/Cards/MasterCard.vue";
 import DefaultInfoCard from "@/examples/Cards/DefaultInfoCard.vue";
 import PaymentCard from "./components/PaymentCard.vue";
 import InvoiceCard from "./components/InvoiceCard.vue";
-import BillingCard from "./components/BillingCard.vue";
-import TransactionCard from "./components/TransactionCard.vue";
+// import BillingCard from "./components/BillingCard.vue";
+// import TransactionCard from "./components/TransactionCard.vue";
 
 export default {
   name: "Billing",
@@ -61,8 +61,8 @@ export default {
     DefaultInfoCard,
     PaymentCard,
     InvoiceCard,
-    BillingCard,
-    TransactionCard,
+    // BillingCard,
+    // TransactionCard,
   },
   data() {
     return {

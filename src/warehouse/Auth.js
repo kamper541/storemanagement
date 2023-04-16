@@ -54,18 +54,20 @@ const actions = {
 
   // Register User
   async register({ commit }, userData) {
-    try {
-      commit("register_request");
+    commit("register_request");
+    try{
       let res = await axios.post(
         "http://localhost:9000/api/users/register",
         userData
       );
       console.log(res);
-      if (res.data.success !== undefined) {
+      if (res.data.success) {
         commit("register_success");
+      } else {
+        commit("register_error", "Error found in resgisteration");
       }
       return res;
-    } catch (err) {
+    }catch(err){
       commit("register_error", err);
     }
   },
@@ -74,7 +76,8 @@ const actions = {
   async getProfile({ commit }) {
     commit("profile_request");
     let res = await axios.get(
-      "http://localhost:9000/api/users/profile?cache=" + Date.now()
+      // "http://localhost:9000/api/users/profile?cache=" + Date.now()
+      "http://localhost:9000/api/users/profile"
     );
     commit("user_profile", res.data.user);
     return res;
@@ -144,11 +147,7 @@ const actions = {
   async upload_image({ commit }, imageFile) {
     commit("uploading_image");
     let res = await axios
-      .post("http://localhost:9000/upload", imageFile, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .post("http://localhost:9000/api/upload", imageFile, {})
       .then((response) => {
         console.log(response);
       })
@@ -186,12 +185,12 @@ const actions = {
   },
 
   // Get idv invoices
-  async get_idv_invoices({ commit }) {
+  async get_idv_invoices({ commit }, customer_id) {
     commit("invoice_request");
-    const user_id = { id: "64033ac3469d0d50a67d3fb8" };
+    console.log(customer_id);
     let res = await axios.get(
       "http://localhost:9000/api/invoices/get_idv_invoices",
-      { params: user_id }
+      { params: { id: customer_id } }
     );
     if (res.data.success) {
       console.log(res.data);
@@ -211,6 +210,19 @@ const actions = {
     if (res.data.status) {
       console.log(res.data);
       commit("invoice_updated");
+    }
+    return res;
+  },
+
+  async order_item({ commit }, updateStock) {
+    commit("ordering_stock");
+    let res = await axios.put(
+      `http://localhost:9000/api/stocks/order`,
+      updateStock
+    );
+    if (res.data.success) {
+      console.log(res.data);
+      commit("stock_ordered");
     }
     return res;
   },
@@ -288,6 +300,12 @@ const mutations = {
     state.stock = stock;
   },
   add_stock(state) {
+    state.status = "success";
+  },
+  ordering_stock(state) {
+    state.status = "loading";
+  },
+  stock_ordered(state) {
     state.status = "success";
   },
   uploading_image(state) {

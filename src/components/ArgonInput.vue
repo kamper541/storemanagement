@@ -14,6 +14,8 @@
         :placeholder="placeholder"
         :isRequired="isRequired"
         :disabled="isDisabled"
+        :max="max"
+        :min="min"
       />
       <span v-if="iconDir === 'right'" class="input-group-text">
         <i :class="getIcon(icon)"></i>
@@ -43,6 +45,8 @@ export default {
     type: String,
     isRequired: Boolean,
     isDisabled: Boolean,
+    max: Number,
+    min: Number
   },
   methods: {
     getClasses: (size, valid) => {

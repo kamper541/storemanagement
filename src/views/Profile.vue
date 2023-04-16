@@ -93,7 +93,7 @@
               </div>
               <div class="text-center">
                 <argon-button color="success" size="sm" class="mb-4 mx-auto"
-                  >Save</argon-button
+                  >Update</argon-button
                 >
               </div>
             </form>

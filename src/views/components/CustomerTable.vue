@@ -30,20 +30,39 @@
           </div>
           <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
+              >EMAIL</label
+            >
+            <argon-input type="email" name="email" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
               >ADDRESS</label
             >
             <argon-input type="text" name="address" value="" />
           </div>
-          <div class="text-center">
+          <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
-              >Password</label
+              >CITY</label
             >
-            <argon-input
-              type="password"
-              name="confirm_password"
-              value=""
-              placeholder="confirm password"
-            />
+            <argon-input type="text" name="city" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >COUNTRY</label
+            >
+            <argon-input type="text" name="country" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >POSTALCODE</label
+            >
+            <argon-input type="number" name="postalcode" value="" />
+          </div>
+          <div class="col-md-6">
+            <label for="example-text-input" class="form-control-label"
+              >ROLE</label
+            >
+            <argon-input type="text" name="role" value="" />
           </div>
         </div>
         <div class="text-center">
@@ -125,21 +144,22 @@ export default {
       let user = {
         username: event.target.elements.id.value,
         password: event.target.elements.password.value,
-        confirm_password: event.target.elements.confirm_password.value,
-        email: "riw1232@hotmail.com",
-        name: "test123",
-        // username: 'test123',
-        // password: '12345',
-        // confirm_password: '12345',
-        // email: 'kamper-fc@hotmail.com',
-        // name: 'testest123'
+        storename: event.target.elements.storename.value,
+        email: event.target.elements.email.value,
+        address: event.target.elements.address.value,
+        city: event.target.elements.city.value,
+        country: event.target.elements.country.value,
+        postalcode: event.target.elements.postalcode.value,
+        role: event.target.elements.role.value
       };
       console.log(user);
 
       this.register(user)
         .then((res) => {
           if (res.data.success) {
+            alert("User created!!")
             this.$router.push("/customer");
+            this.$forceUpdate()
           }
         })
         .catch((err) => {

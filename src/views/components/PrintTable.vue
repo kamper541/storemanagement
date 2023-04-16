@@ -4,7 +4,7 @@
       <a class="avatar avatar-lg rounded-circle">
         <img src="../../img/storelogo.jpeg" alt="" />
       </a>
-      <h3>Invoice</h3>
+      <h3>Order List</h3>
       <p class="mb-1 text-sm font-weight-bold">{{ human_date }}</p>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
@@ -82,7 +82,7 @@
                 {{ item.priceperu * item.orderqty }}
               </td>
               <td class="align-middle text-center">
-                0
+                {{ item.taxactive }}
               </td>
             </tr>
           </tbody>
@@ -153,7 +153,7 @@ export default {
     this.invoice_to_print.order_stock.forEach((item) => {
       qty += item.orderqty;
       sum += item.priceperu * item.orderqty;
-      sum_with_tax += item.priceperu * 1 * item.orderqty;
+      sum_with_tax += (item.priceperu + (item.priceperu * item.taxactive)) * item.orderqty;
     });
     this.result.sum = sum;
     this.result.sum_with_tax = sum_with_tax;

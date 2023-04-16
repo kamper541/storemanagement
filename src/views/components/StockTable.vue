@@ -31,13 +31,19 @@
             <label for="example-text-input" class="form-control-label"
               >DISCOUNT (Amount)</label
             >
-            <argon-input type="number" name="disc" value="" />
+            <argon-input :min="0" type="number" name="disc" value="" />
           </div>
           <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
               >DISCOUNT (%)</label
             >
-            <argon-input type="number" name="discper" value="" />
+            <argon-input
+              :min="0"
+              :vmax="100"
+              type="number"
+              name="discper"
+              value=""
+            />
           </div>
           <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
@@ -49,22 +55,28 @@
             <label for="example-text-input" class="form-control-label"
               >QUANTITIES</label
             >
-            <argon-input type="number" name="qty" value="" />
+            <argon-input :min="0" type="number" name="qty" value="" />
           </div>
           <div class="col-md-6">
             <label for="example-text-input" class="form-control-label"
               >PRICE/UNIT</label
             >
-            <argon-input type="number" name="priceperu" value="" />
+            <argon-input :min="0" type="number" name="priceperu" value="" />
           </div>
           <div class="col-md-6">
             <label for="example-checkbox-input" class="form-control-label"
-              >TAX ACTIVE</label
+              >TAX ACTIVE (%)</label
             >
-            <argon-input type="text" name="taxactive" valeue="" />
+            <argon-input
+              :min="0"
+              :max="100"
+              type="text"
+              name="taxactive"
+              value=""
+            />
           </div>
           <div class="col-md-6">
-            <label for="formFile" class="form-control-label">image</label>
+            <label for="formFile" class="form-control-label">IMAGE</label>
             <div class="form-group">
               <argon-input type="file" name="image" @change="onFileSelected" />
             </div>
@@ -78,114 +90,58 @@
       </form>
     </div>
     <!-- Old Stock Table -->
-    <div class="card-body px-0 pt-0 pb-2">
+    <div class="card-body px-0 pt-0 pb-2" v-if="user.role == 'admin'">
       <div class="stock-table table-responsive p-0">
         <table class="table align-items-center mb-0">
           <thead>
             <tr>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  opacity-7
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
               >
                 Detail
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
               >
                 BarcodeID
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
               >
                 BE ID
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  text-center
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"
               >
                 Discount (amount)
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  text-center
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"
               >
                 Discount (%)
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  text-center
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"
               >
                 JM ID
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  text-center
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"
               >
                 Quantities
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  text-center
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"
               >
                 Price/unit
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  text-center
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"
               >
-                Tax active ?
+                Tax active %
               </th>
               <th
-                class="
-                  text-uppercase text-secondary text-xxs
-                  font-weight-bolder
-                  text-center
-                  opacity-7
-                  ps-2
-                "
+                class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2"
               >
                 Action
               </th>
@@ -207,8 +163,6 @@
                   v-if="item.qty != 0"
                   v-on:click="setSelected(item)"
                   class="text-success font-weight-bold text-xs button"
-                  data-bs-toggle="modal"
-                  data-bs-target="#actionModal"
                   >Add</a
                 >
                 <a v-else class="text-danger font-weight-bold text-xs"
@@ -219,6 +173,11 @@
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="d-flex flex-wrap">
+      <div v-for="item in stock" :key="item._id" class="col-md-3 p-1">
+        <item-card :item_info="item" @selected-invoice="setSelected" />
+      </div>
       <!-- Add Item Modal -->
       <div
         class="modal fade"
@@ -227,6 +186,7 @@
         role="dialog"
         aria-labelledby="actionModalLabel"
         aria-hidden="true"
+        data-backdrop=""
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -237,9 +197,15 @@
               <button
                 type="button"
                 class="btn-close text-dark"
-                data-bs-dismiss="modal"
+                v-on:click="hideItemModal()"
                 aria-label="Close"
               >
+                <!-- <button
+                type="button"
+                class="btn-close text-dark"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              > -->
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -311,16 +277,18 @@
                 <button
                   type="button"
                   class="btn bg-gradient-secondary"
-                  data-bs-dismiss="modal"
+                  v-on:click="hideItemModal()"
                 >
                   Close
                 </button>
-                <button
-                  type="submit"
-                  class="btn bg-gradient-success"
-                  data-bs-toggle="modal"
-                  data-bs-target="#invoiceModal"
+                <!-- <button
+                  type="button"
+                  class="btn bg-gradient-secondary"
+                  data-bs-dismiss="modal"
                 >
+                  Close
+                </button> -->
+                <button type="submit" class="btn bg-gradient-success">
                   Add Item
                 </button>
               </div>
@@ -336,6 +304,7 @@
         role="dialog"
         aria-labelledby="invoiceModalLabel"
         aria-hidden="true"
+        data-backdrop=""
       >
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -346,9 +315,15 @@
               <button
                 type="button"
                 class="btn-close text-dark"
-                data-bs-dismiss="modal"
+                v-on:click="hideInvoiceModal()"
                 aria-label="Close"
               >
+                <!-- <button
+                type="button"
+                class="btn-close text-dark"
+                v-on:click="closeInvoiceModal('invoiceModal')"
+                aria-label="Close"
+              > -->
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -380,7 +355,7 @@
               <button
                 type="button"
                 class="btn bg-gradient-secondary"
-                data-bs-dismiss="modal"
+                v-on:click="hideInvoiceModal()"
               >
                 Close
               </button>
@@ -390,11 +365,6 @@
       </div>
     </div>
   </div>
-  <div class="d-flex flex-wrap">
-    <div v-for="item in stock" :key="item._id" class="col-md-3 p-1">
-      <item-card :item_info="item" @selected-invoice="setSelected" />
-    </div>
-  </div>
 </template>
 
 <script>
@@ -402,7 +372,7 @@ import ArgonButton from "../../components/ArgonButton.vue";
 import ArgonInput from "@/components/ArgonInput.vue";
 import { mapActions, mapGetters } from "vuex";
 import ItemCard from "./ItemCard.vue";
-import axios from "axios";
+import { Modal } from "bootstrap";
 
 // import { db } from "../../Firebase";
 
@@ -417,25 +387,25 @@ export default {
       selectedItem: {},
       pending_invoices: [],
       image: null,
+      orderstatus: false,
+      itemModal: null,
+      invoiceModal: null,
     };
   },
   computed: mapGetters(["stock", "user", "user_invoices"]),
   methods: {
     ...mapActions([
       "get_stock",
+      "getProfile",
       "add_stock",
       "get_idv_invoices",
       "update_item_in_invoice",
       "upload_image",
+      "order_item",
     ]),
     onFileSelected(event) {
       this.image = event.target.files[0];
       console.log(this.image);
-    },
-    async getImage(imagename){
-      let res = await axios.post(`http://localhost:9000/image/${imagename}`)
-      console.log(res);
-      return res
     },
     async handlesubmit(event) {
       event.preventDefault();
@@ -449,10 +419,10 @@ export default {
         jmid: event.target.elements.jmid.value,
         qty: event.target.elements.qty.value,
         priceperu: event.target.elements.priceperu.value,
-        taxactive: event.target.elements.taxactive.value,
+        taxactive: event.target.elements.taxactive.value / 100,
         imagename: this.image.name,
       };
-      // this.add_stock(docRef);
+      this.add_stock(docRef);
 
       // image
       const fd = new FormData();
@@ -460,15 +430,54 @@ export default {
       console.log(fd);
       this.upload_image(fd);
       alert("Item has been added to the stock");
+      this.get_stock();
+      this.$forceUpdate();
       console.log("Document written with ID: ", docRef.barid);
     },
     setSelected(item) {
       console.log(item);
       this.selectedItem = item;
       console.log("Get Invoice of user ", this.user._id);
+      this.openItemModal();
     },
     addItem(event) {
-      this.selectedItem.orderqty = event.target.elements.orederqty.value;
+      let orderqty = event.target.elements.orederqty.value;
+      console.log(orderqty);
+      if (orderqty > this.selectedItem.qty) {
+        alert("Cannot order exceed the stock.");
+        return;
+      }
+      this.selectedItem.orderqty = orderqty;
+      this.hideItemModal();
+      this.openInvoiceModal();
+    },
+    openInvoiceModal() {
+      this.invoiceModal = new Modal(document.getElementById("invoiceModal"), {
+        backdrop: "static",
+      });
+      this.invoiceModal.show();
+    },
+    hideInvoiceModal() {
+      this.invoiceModal.hide();
+      const elements = document.getElementsByClassName("modal-backdrop");
+      while (elements.length > 0) {
+        elements[0].remove();
+      }
+      this.invoiceModal = null;
+    },
+    openItemModal() {
+      this.itemModal = new Modal(document.getElementById("actionModal"), {
+        backdrop: "static",
+      });
+      this.itemModal.show();
+    },
+    hideItemModal() {
+      this.itemModal.hide();
+      const elements = document.getElementsByClassName("modal-backdrop");
+      while (elements.length > 0) {
+        elements[0].remove();
+      }
+      this.itemModal = null;
     },
     addToInvoice(invoice) {
       const updateInvoice = {
@@ -485,15 +494,24 @@ export default {
           taxactive: this.selectedItem.taxactive,
         },
       };
+      const updateStock = {
+        id: this.selectedItem._id,
+        newqty: this.selectedItem.qty - this.selectedItem.orderqty,
+      };
       this.update_item_in_invoice(updateInvoice);
+      this.order_item(updateStock);
       alert(`Adding ${this.selectedItem.detail} to Invoice ${invoice.note}`);
+      this.get_stock()
+      this.$forceUpdate()
     },
   },
   created() {
     this.get_stock();
+    this.getProfile();
     console.log(this.user._id);
     this.get_idv_invoices(this.user._id);
   },
+  mounted() {},
 };
 </script>
 
